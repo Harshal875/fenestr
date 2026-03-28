@@ -75,7 +75,8 @@ def render_site(url: str, width: int = 900, height: int = 600) -> None:
             url=url,
         )
 
-    host = urllib.parse.urlparse(url).netloc.lower().removeprefix("www.")
+    netloc = urllib.parse.urlparse(url).netloc.lower()
+    host = netloc[4:] if netloc.startswith("www.") else netloc
     if host in KNOWN_BLOCKED:
         _logger.warning(
             "⚠️ fenestr: %s may block iframe embedding. "
