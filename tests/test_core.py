@@ -1,8 +1,6 @@
 """Tests for src/fenestr/core.py and the top-level fenestr package API."""
 
-from unittest.mock import MagicMock, call, patch
-
-import pytest
+from unittest.mock import patch
 
 import fenestr
 from fenestr.core import Fenestr, html, show, site, youtube

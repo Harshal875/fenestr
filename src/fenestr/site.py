@@ -1,6 +1,7 @@
 """Website rendering helpers for the fenestr library."""
 
 import urllib.parse
+from typing import FrozenSet
 
 from fenestr.exceptions import InvalidURLError, UnsupportedPlatformError
 from fenestr.logger import get_logger
@@ -8,7 +9,7 @@ from fenestr.validators import is_https, is_valid_url
 
 _logger = get_logger()
 
-KNOWN_BLOCKED: frozenset = frozenset(
+KNOWN_BLOCKED: FrozenSet[str] = frozenset(
     [
         "google.com",
         "stackoverflow.com",
@@ -41,7 +42,7 @@ def _display_iframe(src: str, width: int, height: int) -> None:
         ) from exc
 
     try:
-        display(IFrame(src=src, width=width, height=height))
+        display(IFrame(src=src, width=width, height=height))  # type: ignore[no-untyped-call]
     except Exception as exc:  # noqa: BLE001
         raise UnsupportedPlatformError(
             "Failed to render IFrame — are you running inside a Jupyter notebook?"
@@ -122,7 +123,7 @@ def render_html(html_content: str, width: int = 900, height: int = 400) -> None:
     _logger.debug("Rendering raw HTML (%d chars)", len(html_content))
 
     try:
-        display(HTML(html_content))
+        display(HTML(html_content))  # type: ignore[no-untyped-call]
     except Exception as exc:  # noqa: BLE001
         raise UnsupportedPlatformError(
             "Failed to render HTML — are you running inside a Jupyter notebook?"

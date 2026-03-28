@@ -1,6 +1,6 @@
 """Tests for src/fenestr/youtube.py."""
 
-from unittest.mock import MagicMock, call, patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 

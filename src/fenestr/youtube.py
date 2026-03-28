@@ -28,7 +28,7 @@ def _display_iframe(src: str, width: int, height: int) -> None:
         ) from exc
 
     try:
-        display(IFrame(src=src, width=width, height=height))
+        display(IFrame(src=src, width=width, height=height))  # type: ignore[no-untyped-call]
     except Exception as exc:  # noqa: BLE001
         raise UnsupportedPlatformError(
             "Failed to render IFrame — are you running inside a Jupyter notebook?"

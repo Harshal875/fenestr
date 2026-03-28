@@ -1,6 +1,6 @@
 """Core public API for the fenestr library."""
 
-from typing import Optional
+from typing import Optional, Tuple
 
 from fenestr.logger import get_logger
 from fenestr.site import render_html, render_site
@@ -29,7 +29,7 @@ class Fenestr:
         self.default_width = default_width
         self.default_height = default_height
 
-    def _resolve(self, width: Optional[int], height: Optional[int]) -> tuple:
+    def _resolve(self, width: Optional[int], height: Optional[int]) -> Tuple[int, int]:
         return (
             width if width is not None else self.default_width,
             height if height is not None else self.default_height,
@@ -91,7 +91,9 @@ class Fenestr:
         w, h = self._resolve(width, height)
         render_site(url, width=w, height=h)
 
-    def html(self, content: str, width: Optional[int] = None, height: Optional[int] = None) -> None:
+    def html(  # noqa: A003
+            self, content: str, width: Optional[int] = None,
+            height: Optional[int] = None) -> None:
         """Render a raw HTML string inside a Jupyter Notebook cell.
 
         Args:
