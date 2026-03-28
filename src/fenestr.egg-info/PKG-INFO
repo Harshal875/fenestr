@@ -1,0 +1,80 @@
+Metadata-Version: 2.4
+Name: fenestr
+Version: 0.1.0
+Summary: A window into the web — render YouTube videos and websites inside Jupyter Notebook cells
+Author: Your Name
+Author-email: you@example.com
+License: MIT
+Keywords: jupyter,notebook,youtube,iframe,embed,datascience
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Topic :: Scientific/Engineering :: Visualization
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: ipython>=7.0.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: flake8>=5.0.0; extra == "dev"
+Requires-Dist: mypy>=1.0.0; extra == "dev"
+Requires-Dist: tox>=4.0.0; extra == "dev"
+
+# fenestr
+
+> A window into the web — render YouTube videos and websites inside Jupyter Notebook cells.
+
+[![PyPI version](https://img.shields.io/pypi/v/fenestr.svg)](https://pypi.org/project/fenestr/)
+[![Python versions](https://img.shields.io/pypi/pyversions/fenestr.svg)](https://pypi.org/project/fenestr/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+---
+
+## Overview
+
+**fenestr** (from Latin *fenestra*, meaning window) is a Python library that lets data scientists
+embed YouTube videos and arbitrary websites directly inside Jupyter Notebook output cells —
+no browser switching required.
+
+## Installation
+
+```bash
+pip install fenestr
+```
+
+## Quick Start
+
+```python
+from fenestr import open_window
+
+# Render a YouTube video
+open_window("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+
+# Render a website
+open_window("https://example.com", width=900, height=600)
+```
+
+## API
+
+| Symbol | Description |
+|---|---|
+| `open_window(url, **kwargs)` | Smart dispatch — returns a `YouTubeWindow` or `SiteWindow` |
+| `YouTubeWindow(url, ...)` | Embed a YouTube video via iframe |
+| `SiteWindow(url, ...)` | Embed any website via iframe |
+
+## Development
+
+```bash
+pip install -e ".[dev]"
+tox          # run all checks (pytest + flake8 + mypy)
+tox -e lint  # linting only
+tox -e type  # type checking only
+```
+
+## License
+
+MIT
