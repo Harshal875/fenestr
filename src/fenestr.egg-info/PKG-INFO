@@ -5,6 +5,9 @@ Summary: A window into the web — render YouTube videos and websites inside Jup
 Author: Your Name
 Author-email: you@example.com
 License: MIT
+Project-URL: Homepage, https://github.com/your-username/fenestr
+Project-URL: Bug Tracker, https://github.com/your-username/fenestr/issues
+Project-URL: Changelog, https://github.com/your-username/fenestr/blob/main/CHANGELOG.md
 Keywords: jupyter,notebook,youtube,iframe,embed,datascience
 Classifier: Development Status :: 3 - Alpha
 Classifier: Intended Audience :: Developers
@@ -15,6 +18,8 @@ Classifier: Programming Language :: Python :: 3.8
 Classifier: Programming Language :: Python :: 3.9
 Classifier: Programming Language :: Python :: 3.10
 Classifier: Topic :: Scientific/Engineering :: Visualization
+Classifier: Topic :: Multimedia :: Video
+Classifier: Topic :: Internet :: WWW/HTTP
 Requires-Python: >=3.8
 Description-Content-Type: text/markdown
 Requires-Dist: ipython>=7.0.0
@@ -26,19 +31,26 @@ Requires-Dist: tox>=4.0.0; extra == "dev"
 
 # fenestr
 
-> A window into the web — render YouTube videos and websites inside Jupyter Notebook cells.
+> **fenestr — a window into the web, from inside your notebook.**
 
 [![PyPI version](https://img.shields.io/pypi/v/fenestr.svg)](https://pypi.org/project/fenestr/)
+[![CI](https://github.com/your-username/fenestr/actions/workflows/ci.yml/badge.svg)](https://github.com/your-username/fenestr/actions/workflows/ci.yml)
 [![Python versions](https://img.shields.io/pypi/pyversions/fenestr.svg)](https://pypi.org/project/fenestr/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ---
 
+## Why fenestr?
+
+The name comes from the Latin word *fenestra*, meaning **window**. Just as a window lets you
+see the outside world without leaving the room, fenestr lets you bring the web inside your
+Jupyter Notebook without ever switching tabs.
+
 ## Overview
 
-**fenestr** (from Latin *fenestra*, meaning window) is a Python library that lets data scientists
-embed YouTube videos and arbitrary websites directly inside Jupyter Notebook output cells —
-no browser switching required.
+**fenestr** is a lightweight Python library for data scientists and educators that renders
+YouTube videos and websites directly inside Jupyter Notebook output cells via iframes.
+No browser switching. No copy-pasting URLs. Just one function call.
 
 ## Installation
 
@@ -49,30 +61,95 @@ pip install fenestr
 ## Quick Start
 
 ```python
-from fenestr import open_window
+import fenestr
 
-# Render a YouTube video
-open_window("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+# Auto-detect: YouTube video or website — fenestr figures it out
+fenestr.show("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+# → Renders an embedded YouTube player in the cell output
 
-# Render a website
-open_window("https://example.com", width=900, height=600)
+fenestr.show("https://docs.python.org/3/", width=1100, height=700)
+# → Renders the Python docs site inline
+
+# Explicit YouTube with autoplay
+fenestr.youtube("https://youtu.be/dQw4w9WgXcQ", autoplay=True)
+
+# Render a YouTube playlist
+from fenestr.youtube import render_youtube_playlist
+render_youtube_playlist("PLxxxxxxxxxxxxxxxx")
+
+# Embed raw HTML
+fenestr.html("<h2 style='color: steelblue'>Hello from fenestr!</h2>")
+
+# Class-based API with persistent defaults
+f = fenestr.Fenestr(default_width=1000, default_height=600)
+f.show("https://docs.python.org/3/")
+f.youtube("https://youtu.be/dQw4w9WgXcQ")
 ```
 
-## API
+## API Reference
 
-| Symbol | Description |
+### Convenience functions
+
+| Function | Description |
 |---|---|
-| `open_window(url, **kwargs)` | Smart dispatch — returns a `YouTubeWindow` or `SiteWindow` |
-| `YouTubeWindow(url, ...)` | Embed a YouTube video via iframe |
-| `SiteWindow(url, ...)` | Embed any website via iframe |
+| `fenestr.show(url, width, height)` | Auto-dispatch: YouTube → `render_youtube`, else → `render_site` |
+| `fenestr.youtube(url, width, height, autoplay)` | Embed a YouTube video |
+| `fenestr.site(url, width, height)` | Embed any HTTPS website |
+| `fenestr.html(content, width, height)` | Render a raw HTML string |
+
+### Class-based API
+
+```python
+f = fenestr.Fenestr(default_width=800, default_height=450)
+f.show(url)      # auto-dispatch
+f.youtube(url)   # YouTube only
+f.site(url)      # website only
+f.html(content)  # raw HTML
+```
+
+### Exceptions
+
+| Exception | Raised when |
+|---|---|
+| `InvalidURLError` | URL is malformed, not HTTPS, or not a valid YouTube link |
+| `UnsupportedPlatformError` | Running outside Jupyter, or IPython not installed |
+| `RenderError` | IFrame display call fails unexpectedly |
+
+## Known Limitations — iframe Blocking
+
+Many high-traffic websites set the `X-Frame-Options: DENY` or
+`Content-Security-Policy: frame-ancestors 'none'` HTTP headers, which instruct browsers to
+refuse to load the page inside an iframe. This is a **server-side restriction** that fenestr
+cannot bypass.
+
+The following domains are known to block iframe embedding:
+
+| Domain | Blocks iframes? |
+|---|---|
+| `google.com` | Yes |
+| `github.com` | Yes |
+| `stackoverflow.com` | Yes |
+| `medium.com` | Yes |
+| `twitter.com` | Yes |
+| `facebook.com` | Yes |
+
+fenestr will still attempt to render these URLs and will log a warning. If you see a blank
+frame, the restriction is server-side and unrelated to fenestr.
+
+**Works well with:** documentation sites, Wikipedia, news sites, your own hosted pages,
+and any site that does not set `X-Frame-Options`.
 
 ## Development
 
 ```bash
+git clone https://github.com/your-username/fenestr.git
+cd fenestr
+python -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
-tox          # run all checks (pytest + flake8 + mypy)
-tox -e lint  # linting only
-tox -e type  # type checking only
+
+tox           # run all checks: pytest + flake8 + mypy
+tox -e lint   # flake8 only
+tox -e type   # mypy only
 ```
 
 ## License

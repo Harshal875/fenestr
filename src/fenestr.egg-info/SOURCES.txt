@@ -5,6 +5,7 @@ src/fenestr/__init__.py
 src/fenestr/core.py
 src/fenestr/exceptions.py
 src/fenestr/logger.py
+src/fenestr/py.typed
 src/fenestr/site.py
 src/fenestr/validators.py
 src/fenestr/youtube.py
@@ -13,4 +14,7 @@ src/fenestr.egg-info/SOURCES.txt
 src/fenestr.egg-info/dependency_links.txt
 src/fenestr.egg-info/requires.txt
 src/fenestr.egg-info/top_level.txt
+tests/test_core.py
+tests/test_site.py
 tests/test_validators.py
+tests/test_youtube.py
