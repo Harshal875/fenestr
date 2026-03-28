@@ -17,21 +17,28 @@ def _warn_dimensions(width: int, height: int) -> None:
         _logger.warning("Unusual height value: %d (expected %d–%d)", height, _MIN_DIM, _MAX_DIM)
 
 
-def _display_iframe(src: str, width: int, height: int) -> None:
-    """Import IPython lazily and render an IFrame."""
+def _display_youtube_iframe(src: str, width: int, height: int) -> None:
+    """Render a YouTube embed using HTML with required allow attributes."""
     try:
-        from IPython.display import IFrame, display  # type: ignore[import]
+        from IPython.display import HTML, display  # type: ignore[import]
     except ImportError as exc:
         raise UnsupportedPlatformError(
             "IPython is required to render content in a Jupyter notebook. "
             "Install it with: pip install ipython"
         ) from exc
 
+    iframe_html = (
+        f'<iframe width="{width}" height="{height}" src="{src}" '
+        'frameborder="0" '
+        'allow="accelerometer; autoplay; clipboard-write; '
+        'encrypted-media; gyroscope; picture-in-picture" '
+        'allowfullscreen></iframe>'
+    )
     try:
-        display(IFrame(src=src, width=width, height=height))  # type: ignore[no-untyped-call]
+        display(HTML(iframe_html))  # type: ignore[no-untyped-call]
     except Exception as exc:  # noqa: BLE001
         raise UnsupportedPlatformError(
-            "Failed to render IFrame — are you running inside a Jupyter notebook?"
+            "Failed to render iframe — are you running inside a Jupyter notebook?"
         ) from exc
 
 
@@ -71,7 +78,7 @@ def render_youtube(
 
     _warn_dimensions(width, height)
     _logger.debug("Rendering YouTube video %r (autoplay=%s)", video_id, autoplay)
-    _display_iframe(embed_url, width, height)
+    _display_youtube_iframe(embed_url, width, height)
 
 
 def render_youtube_playlist(
@@ -101,4 +108,4 @@ def render_youtube_playlist(
     embed_url = f"https://www.youtube.com/embed/videoseries?list={playlist_id}"
     _warn_dimensions(width, height)
     _logger.debug("Rendering YouTube playlist %r", playlist_id)
-    _display_iframe(embed_url, width, height)
+    _display_youtube_iframe(embed_url, width, height)
