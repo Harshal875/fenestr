@@ -13,7 +13,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.8", "3.9", "3.10"]
+        include:
+          - python-version: "3.8"
+            tox-env: py38
+          - python-version: "3.9"
+            tox-env: py39
+          - python-version: "3.10"
+            tox-env: py310
 
     steps:
       - uses: actions/checkout@v4
@@ -27,7 +33,7 @@ jobs:
         run: pip install tox
 
       - name: Run tests via tox
-        run: tox -e py${{ matrix.python-version == '3.10' && '310' || matrix.python-version == '3.9' && '39' || '38' }}
+        run: tox -e ${{ matrix.tox-env }}
 
   lint:
     name: Lint (flake8)
